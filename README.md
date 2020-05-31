@@ -35,8 +35,15 @@ Table of Contents
 # maven multi-module project
 
 ## [maven-multimodule-maven-sonar-plugin](maven-multimodule-maven-sonar-plugin)
+>   maven + sonar-maven-plugin
 
 ## [maven-multimodule-sonar-scanner](maven-multimodule-sonar-scanner)
+>   maven + sonar-scanner
+
+## [maven-multimodule-individual-module-coverage](maven-multimodule-individual-module-coverage)
+>   maven + sonar-scanner
+>   unit test + integration test coverage ratio per module
+
 
 # local setup
 
