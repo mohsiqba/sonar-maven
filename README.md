@@ -15,7 +15,7 @@ Table of Contents
 ## [maven-basic-maven-sonar-plugin](maven-basic-maven-sonar-plugin)
 >   maven + sonar-maven-plugin
 
-## [maven-basic-sonar-scanner](maven-basic-sonar-scanner)
+## [maven-basic-sonar-scanner-cli](maven-basic-sonar-scanner-cli)
 >   maven + sonar-scanner
 
 ## [maven-basic-individual-report-unit-integration-test](maven-basic-individual-report-unit-integration-test)
