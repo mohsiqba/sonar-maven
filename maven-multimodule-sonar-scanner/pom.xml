@@ -1,12 +1,147 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.example</groupId>
-    <artifactId>maven-multimodule-sonar-scanner</artifactId>
-    <version>1.0-SNAPSHOT</version>
+  <groupId>com.mohsin.sonar</groupId>
+  <artifactId>maven-multimodule-sonar-scanner</artifactId>
+  <version>1.0-SNAPSHOT</version>
+  <packaging>pom</packaging>
 
+  <name>multi-module maven project with sonar-scanner cli</name>
 
+  <modules>
+    <module>module1</module>
+    <module>module2</module>
+    <module>tests</module>
+
+    <!-- create report-bundle to aggregate report. this is needed for sonar when working with multimodule maven projects
+      for multimodule projects
+      1.  report-bundle should define all modules as dependency.
+      2.  define jacoco report-aggregate goal.
+     -->
+    <module>report-bundle</module>
+  </modules>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
+    <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+    <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
+    <skip.unit.tests>false</skip.unit.tests>
+    <skip.integration.tests>false</skip.integration.tests>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-compiler-plugin</artifactId>
+          <version>3.8.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>${maven-surefire-plugin.version}</version>
+          <configuration>
+            <!-- Sets the VM argument line used when unit tests are run. -->
+            <!--<argLine>${surefireArgLine}</argLine>-->
+            <!-- Skips unit tests if the value of skip.unit.tests property is true -->
+            <skipTests>${skip.unit.tests}</skipTests>
+            <!-- Excludes integration tests when unit tests are run. -->
+            <excludes>
+              <exclude>**/*IT.java</exclude>
+            </excludes>
+            <!--<excludedGroups>com.mohsin.sonar.it</excludedGroups> used with @Category annotation-->
+          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-failsafe-plugin</artifactId>
+          <version>${maven-failsafe-plugin.version}</version>
+          <executions>
+            <!--Ensures that both integration-test and verify goals of the Failsafe Maven plugin are executed.-->
+            <execution>
+              <goals>
+                <goal>integration-test</goal>
+                <goal>verify</goal>
+              </goals>
+              <configuration>
+                <!-- Sets the VM argument line used when integration tests are run. -->
+                <!--<argLine>${failsafeArgLine}</argLine>-->
+                <!--Skips integration tests if the value of skip.integration.tests property is true -->
+                <skipTests>${skip.integration.tests}</skipTests>
+              </configuration>
+            </execution>
+          </executions>
+        </plugin>
+
+        <plugin>
+          <groupId>org.jacoco</groupId>
+          <artifactId>jacoco-maven-plugin</artifactId>
+          <version>${jacoco-maven-plugin.version}</version>
+          <configuration>
+            <excludes>
+              <exclude>**/*com/mohsin/sonar/MavenBasicApplication.class</exclude>
+            </excludes>
+            <includes>
+            </includes>
+            <append>true</append>
+          </configuration>
+          <executions>
+            <!--Prepares the property pointing to the JaCoCo runtime agent which is passed as VM argument when Maven the Surefire plugin is executed.-->
+            <execution>
+              <id>pre-unit-test</id>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <!-- Sets the name of the property containing the settings for JaCoCo runtime agent.-->
+                <!--<propertyName>surefireArgLine</propertyName>-->
+              </configuration>
+            </execution>
+            <!-- Ensures that the code coverage report for unit tests is created after unit tests have been run.-->
+            <execution>
+              <id>post-unit-test</id>
+              <phase>test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+            <!-- Prepares the property pointing to the JaCoCo runtime agent which is passed as VM argument when Maven the Failsafe plugin is executed.-->
+            <execution>
+              <id>pre-integration-test</id>
+              <phase>pre-integration-test</phase>
+              <goals>
+                <goal>prepare-agent</goal>
+              </goals>
+              <configuration>
+                <!--Sets the name of the property containing the settings for JaCoCo runtime agent.-->
+                <!--<propertyName>failsafeArgLine</propertyName>-->
+              </configuration>
+            </execution>
+            <!--Ensures that the code coverage report for integration tests after integration tests have been run.-->
+            <execution>
+              <id>post-integration-test</id>
+              <phase>post-integration-test</phase>
+              <goals>
+                <goal>report</goal>
+              </goals>
+            </execution>
+          </executions>
+        </plugin>
+      </plugins>
+  </build>
 </project>

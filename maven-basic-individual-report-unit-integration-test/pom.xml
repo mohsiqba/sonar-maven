@@ -201,7 +201,7 @@
                     <excludes>
                         <exclude>**/*IT.java</exclude>
                     </excludes>
-                    <!--<excludedGroups>com.walmart.enigma.it</excludedGroups> used with @Category annotation-->
+                    <!--<excludedGroups>com.mohsin.sonar.it</excludedGroups> used with @Category annotation-->
                 </configuration>
             </plugin>
             <plugin>
